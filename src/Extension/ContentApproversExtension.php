@@ -14,8 +14,8 @@ use SilverStripe\Forms\LiteralField;
 class ContentApproversExtension extends DataExtension
 {
     private static $has_one	= array(
-		'PublisherGroup'		=> Group::class,
-		'ApproverGroup'		=> Group::class,
+        'ApproverGroup'		=> Group::class,
+        'PublisherGroup'		=> Group::class,
     );
 
     public function updateSettingsFields(FieldList $fields) {
