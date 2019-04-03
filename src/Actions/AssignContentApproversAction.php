@@ -38,6 +38,10 @@ class AssignContentApproversAction extends WorkflowAction
         $appliedTo = null;
         $target = $workflow->getTarget();
 
+        if ($target && $target->hasMethod('updateContentApproverContext')) {
+            $target->invokeWithExtensions('updateContentApproverContext', $target);
+        }
+
         if ($target && $target->hasExtension(ContentApproversExtension::class)) {
             $user = null;
             $group = null;
