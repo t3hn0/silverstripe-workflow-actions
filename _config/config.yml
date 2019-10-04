@@ -1,0 +1,4 @@
+# admin files
+SilverStripe\Admin\LeftAndMain:
+  extra_requirements_css:
+    - 'symbiote-library/silverstripe-workflow-actions:client/styles/admin.css'
