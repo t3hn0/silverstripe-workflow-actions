@@ -2,3 +2,7 @@
     padding-left: 0;
     list-style-type: none;
 }
+
+.workflow-right-elements-list input.checkbox {
+    vertical-align: text-bottom;
+}
