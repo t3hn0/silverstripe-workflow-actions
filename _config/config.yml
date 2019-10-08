@@ -1,4 +1,24 @@
+---
+Name: workflow_actions_styles
+---
 # admin files
 SilverStripe\Admin\LeftAndMain:
   extra_requirements_css:
     - 'symbiote-library/silverstripe-workflow-actions:client/styles/admin.css'
+
+---
+Name: workflow_actions_extensions
+---
+Page:
+  extensions:
+    - Symbiote\AdvancedWorkflow\Extension\WorkflowFieldCapture
+    - Symbiote\AdvancedWorkflow\Extension\ContentApproversExtension
+Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance:
+  extensions:
+    - Symbiote\AdvancedWorkflow\Extension\WorkflowActionInstanceExtension
+SilverStripe\CMS\Controllers\CMSPageEditController:
+  extensions:
+    - Symbiote\AdvancedWorkflow\Extension\RightsideWorkflow
+SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest:
+  extensions:
+    - Symbiote\AdvancedWorkflow\Extension\RightsideWorkflow
