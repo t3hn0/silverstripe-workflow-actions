@@ -19,7 +19,10 @@
         }
     ],
     "require": {
-        "silverstripe/framework": "^4.0"
+        "silverstripe/framework": "^4.0",
+        "symbiote/silverstripe-advancedworkflow": "^5.0",
+        "symbiote/silverstripe-multivaluefield": "^5.0",
+        "micschk/silverstripe-rightsidebar": "^2.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7"
