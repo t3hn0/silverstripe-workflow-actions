@@ -1,10 +1,41 @@
 /* SelectElement styling */
-.workflow-right-elements-list {
+.wfa-right-elements-list {
     padding-left: 0;
     list-style-type: none;
 }
-.workflow-right-elements-list input.checkbox {
-    vertical-align: text-bottom;
+.wfa-right-elements-list input.checkbox {
+    vertical-align: middle;
+}
+
+/* tooltip styling */
+.wfa-right-elements-list label {
+    position: relative;
+    vertical-align: middle;
+    max-width: 85%;
+    margin: .2rem 0;
+}
+.wfa-right-elements-list .wfa-trunc {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.wfa-right-elements-list .wfa-tip {
+    visibility: hidden;
+    position: absolute;
+    z-index: 1;
+    top: 2rem;
+    left: 0px;
+    width: 180px;
+    padding: 5px;
+    color: #566b8d;
+    font-size: .923rem;
+    background-color: seashell;
+    border: 1px solid #566b8d;
+    border-radius: 3px;
+    pointer-events: none;
+}
+.wfa-right-elements-list li:hover .wfa-tip {
+    visibility: visible;
 }
 
 /* fix for rightsidebar overlapping root form */
