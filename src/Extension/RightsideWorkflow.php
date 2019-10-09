@@ -38,8 +38,7 @@ class RightsideWorkflow extends Extension
         $form->Fields()->removeByName('WorkflowActions');
 
         $form->Fields()->insertBefore($sb, 'Root');
-        $form->Fields()->fieldByName('Root')->setTemplate('RightSidebar');
-
+        $form->Fields()->fieldByName('Root')->setTemplate('Restruct\RightSidebar\Forms\RightSidebarInner');
 
         // use any workflow settings for extra required fields
         $required = $this->owner->config()->required_fields;

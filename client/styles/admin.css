@@ -1,8 +1,21 @@
+/* SelectElement styling */
 .workflow-right-elements-list {
     padding-left: 0;
     list-style-type: none;
 }
-
 .workflow-right-elements-list input.checkbox {
     vertical-align: text-bottom;
+}
+
+/* fix for rightsidebar overlapping root form */
+.rightsidebar-inner {
+    margin-right: 260px;
+}
+.rightsidebar {
+    right: 15px !important;
+}
+@media (max-width: 991px) {
+    .rightsidebar {
+        right: 0px !important;
+    }
 }
