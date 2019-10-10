@@ -7,7 +7,23 @@
     vertical-align: middle;
 }
 
-/* tooltip styling */
+/* SelectElement readonly styling */
+.wfa-right-elements-list.wfa-readonly ul {
+    color: #43536d;
+    padding-left: 3px;
+    background-color: #f1f3f6;
+    border-radius: 3px;
+    border: 1px solid #e7ebf0;
+}
+.wfa-right-elements-list.wfa-readonly ul:after {
+    float: right;
+    font-size: .85rem;
+    font-style: italic;
+    color: #566b8d;
+    content: 'readonly';
+}
+
+/* SelectElement tooltip styling */
 .wfa-right-elements-list label {
     position: relative;
     vertical-align: middle;
