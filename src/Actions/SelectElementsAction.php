@@ -2,12 +2,8 @@
 
 namespace Symbiote\AdvancedWorkflow\Actions;
 
-use SilverStripe\Security\Group;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
-use SilverStripe\Forms\CheckboxField;
-use SilverStripe\Forms\DropdownField;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
-use Symbiote\AdvancedWorkflow\Extension\ContentApproversExtension;
 
 class SelectElementsAction extends WorkflowAction
 {
@@ -21,15 +17,12 @@ class SelectElementsAction extends WorkflowAction
 
     public function getCMSFields()
     {
-        $fields = parent::getCMSFields();
-
-        return $fields;
+        return parent::getCMSFields();
     }
 
     public function execute(WorkflowInstance $workflow)
     {
-        $target = $workflow->getTarget();
-
+        // see SelectElementsInstance::onSaveWorkflowPage()
         return true;
     }
 }

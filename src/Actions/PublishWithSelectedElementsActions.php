@@ -23,7 +23,7 @@ class PublishWithSelectedElementsActions extends PublishItemWorkflowAction
             return true;
         }
 
-        // TODO: Add back queued jobs logic with new job, etc.
+        // TODO: Add queued jobs logic with 'selected elements' job, etc.
 
         if ($target->hasExtension(WorkflowEmbargoExpiryExtension::class)) {
             $target->AllowEmbargoedEditing = $this->AllowEmbargoedEditing;
