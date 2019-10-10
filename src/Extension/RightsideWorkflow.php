@@ -71,7 +71,7 @@ class RightsideWorkflow extends Extension
         // show readonly selected elements list where appropriate
         if (!($action instanceof SelectElementsInstance)) {
             if ($sei = SelectElementsInstance::findInWorkflow($active)) {
-                $sb->push($sei->getSelectionList(true));
+                $sb->push($sei->getSelectedElementsField(true));
             }
         }
 

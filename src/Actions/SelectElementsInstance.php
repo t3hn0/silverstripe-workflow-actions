@@ -31,10 +31,10 @@ class SelectElementsInstance extends WorkflowActionInstance
     {
         parent::updateWorkflowFields($fields);
 
-        $fields->push($this->getSelectionList());
+        $fields->push($this->getSelectedElementsField());
     }
 
-    public function getSelectionList($readonly = false)
+    public function getSelectedElementsField($readonly = false)
     {
         try {
             $elements = Controller::curr()->currentPage()->ElementalArea()->Elements();
@@ -62,6 +62,12 @@ class SelectElementsInstance extends WorkflowActionInstance
         }
 
         return $checklist;
+    }
+
+    public function getSelectedElementsIDs()
+    {
+        $vals = $this->SelectedElements->getValue();
+        return array_values($vals);
     }
 
     public static function findInWorkflow($wfInstance)
