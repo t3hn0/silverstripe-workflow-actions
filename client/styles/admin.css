@@ -1,4 +1,4 @@
-/* SelectElement styling */
+/* SelectElement */
 .wfa-right-elements-list {
     padding-left: 0;
     list-style-type: none;
@@ -54,12 +54,18 @@
     visibility: visible;
 }
 
+/* hide sidebar header */
+#WorkflowHeader {
+    display: none;
+}
+
 /* fix for rightsidebar overlapping root form */
 .rightsidebar-inner {
     margin-right: 260px;
 }
 .rightsidebar {
     right: 15px !important;
+    padding-top: 40px;
 }
 @media (max-width: 991px) {
     .rightsidebar {
