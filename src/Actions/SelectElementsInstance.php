@@ -18,19 +18,17 @@ class SelectElementsInstance extends WorkflowActionInstance
     private static $table_name = 'SelectElementsInstance';
 
     /**
-     * Hook into page save event
+     * Hook into object save event
      *
      * @see WorkflowFieldCapture
      *
-     * @param Page $page
+     * @param DataObject $object
      * @param array $postVars
      * @return void
      */
-    public function onSaveWorkflowPage($page, $postVars)
+    public function onSaveWorkflowState($object, $postVars)
     {
-        parent::onSaveWorkflowPage($page, $postVars);
-
-        // store selected elements
+        // store selected elements (inc none to allow for deselecting)
         $selected = isset($postVars['SelectedElements']) ? $postVars['SelectedElements'] : [];
         $this->SelectedElements->setValue($selected);
     }

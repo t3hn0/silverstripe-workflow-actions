@@ -13,18 +13,17 @@ class WorkflowFieldCapture extends DataExtension
 {
     public function onBeforeWrite()
     {
-        // we know that owner is a Page and that all Pages have this extension
-        if ($wfi = $this->owner->getWorkflowInstance()) {
+        // get workflow
+        if ($this->owner->hasMethod('getWorkflowInstance') && $wfi = $this->owner->getWorkflowInstance()) {
+            // get curr action
             if ($action = $wfi->CurrentAction()) {
-                // incase a page is saved via means other than form submission
+                // incase this isn't an edit form submission
                 try {
                     $postVars = Controller::curr()->getRequest()->postVars();
                 } catch (\Exception $e) {
                     $postVars = [];
                 }
-                $action->preSaveWorkflowPage();
-                $action->onSaveWorkflowPage($this->owner, $postVars);
-                $action->postSaveWorkflowPage();
+                $action->invokeWithExtensions('onSaveWorkflowState', $this->owner, $postVars);
                 $action->write();
             }
         }

@@ -22,7 +22,7 @@ class SelectElementsAction extends WorkflowAction
 
     public function execute(WorkflowInstance $workflow)
     {
-        // see SelectElementsInstance::onSaveWorkflowPage()
+        // see SelectElementsInstance::onSaveWorkflowState()
         return true;
     }
 }

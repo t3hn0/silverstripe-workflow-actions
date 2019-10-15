@@ -6,34 +6,19 @@ use SilverStripe\ORM\DataExtension;
 
 class WorkflowActionInstanceExtension extends DataExtension
 {
-    private $brokenOnSaveWorkflowPage = false;
-
     /**
-     * Override this in descendants of `WorkflowActionInstance`
+     * Hook into object save event
      *
-     * @param Page $page The page object being saved
-     * @param array $postVars The submitted fields/values
+     * @see WorkflowFieldCapture
+     *
+     * @param DataObject $object
+     * @param array $postVars
      * @return void
      */
-    public function onSaveWorkflowPage($page, $postVars)
+    public function onSaveWorkflowState($object, $postVars)
     {
-        $this->brokenOnSaveWorkflowPage = false;
-
         if (isset($postVars['Comment'])) {
             $this->getOwner()->Comment = $postVars['Comment'];
-        }
-    }
-
-    public function preSaveWorkflowPage()
-    {
-        $this->brokenOnSaveWorkflowPage = true;
-    }
-
-    public function postSaveWorkflowPage()
-    {
-        if ($this->brokenOnSaveWorkflowPage) {
-            user_error(static::class . " has a broken onSaveWorkflowPage() function."
-                . " Make sure that you call parent::onSaveWorkflowPage().", E_USER_ERROR);
         }
     }
 }
