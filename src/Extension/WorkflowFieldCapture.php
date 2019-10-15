@@ -2,6 +2,7 @@
 
 namespace Symbiote\AdvancedWorkflow\Extension;
 
+use SilverStripe\Control\Controller;
 use SilverStripe\ORM\DataExtension;
 
 /**
@@ -12,16 +13,18 @@ class WorkflowFieldCapture extends DataExtension
 {
     public function onBeforeWrite()
     {
-        if ($this->owner->Comment) {
-            // see if we've got an active workflow that might be interested in the
-            // comment text
-            $active = $this->owner->getWorkflowInstance();
-            if ($active) {
-                $action = $active->CurrentAction();
-                if ($action) {
-                    $action->update($this->owner->toMap());
-                    $action->write();
+        // get workflow
+        if ($this->owner->hasMethod('getWorkflowInstance') && $wfi = $this->owner->getWorkflowInstance()) {
+            // get curr action
+            if ($action = $wfi->CurrentAction()) {
+                // incase this isn't an edit form submission
+                try {
+                    $postVars = Controller::curr()->getRequest()->postVars();
+                } catch (\Exception $e) {
+                    $postVars = [];
                 }
+                $action->invokeWithExtensions('onSaveWorkflowState', $this->owner, $postVars);
+                $action->write();
             }
         }
     }

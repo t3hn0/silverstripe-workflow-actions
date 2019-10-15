@@ -22,7 +22,7 @@ class WorkflowedElement extends DataExtension
                     'wflMessage',
                     '<div class="message warning">This page is currently in workflow</div>'
                 );
-                $fields->insertBefore('TitleAndDisplayed', $msg);
+                $fields->insertBefore('Title', $msg);
             }
         }
     }

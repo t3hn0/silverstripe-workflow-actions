@@ -7,6 +7,7 @@ use SilverStripe\Forms\Form;
 use Restruct\RightSidebar\RightSidebar;
 use SilverStripe\Forms\RequiredFields;
 use Symbiote\AdvancedWorkflow\Actions\RequireFieldsActionInstance;
+use Symbiote\AdvancedWorkflow\Actions\SelectElementsInstance;
 use Symbiote\AdvancedWorkflow\Services\WorkflowService;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\i18n\i18n;
@@ -38,8 +39,7 @@ class RightsideWorkflow extends Extension
         $form->Fields()->removeByName('WorkflowActions');
 
         $form->Fields()->insertBefore($sb, 'Root');
-        $form->Fields()->fieldByName('Root')->setTemplate('RightSidebar');
-
+        $form->Fields()->fieldByName('Root')->setTemplate('Restruct\RightSidebar\Forms\RightSidebarInner');
 
         // use any workflow settings for extra required fields
         $required = $this->owner->config()->required_fields;
@@ -65,6 +65,13 @@ class RightsideWorkflow extends Extension
                     'Comment',
                     LiteralField::create('RequireWfFields', $label)
                 );
+            }
+        }
+
+        // show readonly selected elements list where appropriate
+        if (!($action instanceof SelectElementsInstance)) {
+            if ($sei = SelectElementsInstance::findInWorkflow($active)) {
+                $sb->push($sei->getSelectedElementsField(true));
             }
         }
 
