@@ -2,10 +2,12 @@
 namespace Symbiote\AdvancedWorkflow\Extension;
 
 use SilverStripe\ORM\DataExtension;
+use SilverStripe\ORM\DataObject;
 use SilverStripe\Forms\FieldList;
 use Symbiote\AdvancedWorkflow\Services\WorkflowService;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\LiteralField;
+use DNADesign\Elemental\Models\ElementalArea;
 
 class WorkflowedElement extends DataExtension
 {
@@ -29,11 +31,26 @@ class WorkflowedElement extends DataExtension
 
     public function canPublish($member = null)
     {
-        if ($this->owner->hasMethod('getPage')) {
-            if ($page = $this->owner->getPage()) {
-                return $page->canPublish($member);
-            }
+        /**
+         * We don't use BaseElement::getPage() here as it can fail if the owner/element
+         * was retrieved using Versioned::get_version().
+         *
+         * A simplification of why:
+         * - Specific version of element loaded using query params.
+         * - Query params stored on element as part of construction.
+         * - When element loads a has-one, it uses DataObject::getComponent().
+         * - getComponent uses stored query params (inc the element version).
+         * - Thus getComponent tries to load related object with same version as $this.
+         * - Wait, that's illegal!
+         *
+         * @see CopyToStage::resolve() to get started in understanding the steps below.
+         */
+        if ($this->owner->hasField('ParentID') && $this->owner->ParentID) {
+            $area = DataObject::get_by_id(ElementalArea::class, $this->owner->ParentID);
+            $page = $area->getOwnerPage();
+            return $page->canPublish($member);
         }
+        return false;
     }
 
     public function onBeforeWrite()
