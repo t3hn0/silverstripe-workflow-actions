@@ -8,6 +8,8 @@ use Symbiote\AdvancedWorkflow\Services\WorkflowService;
 use SilverStripe\Forms\HeaderField;
 use SilverStripe\Forms\LiteralField;
 use DNADesign\Elemental\Models\ElementalArea;
+use SilverStripe\Control\Controller;
+use SilverStripe\Security\Permission;
 
 class WorkflowedElement extends DataExtension
 {
@@ -29,6 +31,30 @@ class WorkflowedElement extends DataExtension
         }
     }
 
+    /**
+     * Whether the current user is an admin and is performing an
+     * inline (graphql) publish on an individual element.
+     *
+     * @param Member $member The current user
+     * @return boolean
+     */
+    public function canInlinePublish($member = null)
+    {
+        if (!Permission::checkMember($member, 'ADMIN')) {
+            return false;
+        }
+
+        try {
+            $req = Controller::curr()->getRequest();
+            $data = json_decode($req->getBody());
+            $pub_action = ($data->operationName == 'PublishBlock');
+            $cur_block = ($data->variables->blockId == $this->owner->ID);
+            return ($pub_action && $cur_block);
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
     public function canPublish($member = null)
     {
         /**
@@ -46,6 +72,10 @@ class WorkflowedElement extends DataExtension
          * @see CopyToStage::resolve() to get started in understanding the steps below.
          */
         if ($this->owner->hasField('ParentID') && $this->owner->ParentID) {
+            // if is admin doing graphql publish, allow it
+            if ($this->canInlinePublish($member)) {
+                return true;
+            }
             $area = DataObject::get_by_id(ElementalArea::class, $this->owner->ParentID);
             $page = $area->getOwnerPage();
             return $page->canPublish($member);
