@@ -1,4 +1,5 @@
 <?php
+
 namespace Symbiote\AdvancedWorkflow\Extension;
 
 use SilverStripe\ORM\DataExtension;
@@ -47,9 +48,11 @@ class WorkflowedElement extends DataExtension
         try {
             $req = Controller::curr()->getRequest();
             $data = json_decode($req->getBody());
-            $pub_action = ($data->operationName == 'PublishBlock');
-            $cur_block = ($data->variables->blockId == $this->owner->ID);
-            return ($pub_action && $cur_block);
+            if ($data) {
+                $pub_action = ($data->operationName == 'PublishBlock');
+                $cur_block = ($data->variables->blockId == $this->owner->ID);
+                return ($pub_action && $cur_block);
+            }
         } catch (\Exception $e) {
             return false;
         }
