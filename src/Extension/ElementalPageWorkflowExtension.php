@@ -16,40 +16,43 @@ class ElementalPageWorkflowExtension extends DataExtension {
     ];
 
     public function updateCMSFields(FieldList $fields) {
-        $vals = $this->owner->ModifiedElements->getValues();
-        $vals = $vals ?: [];
+        $owner = $this->getOwner();
+        if ($owner->ModifiedElements) {
+            $vals = $owner->ModifiedElements->getValues() ?: [];
 
-        $sourceKeys = array_keys($vals);
-        $sourceVals = array_values($vals);
-
-        foreach ($vals as $elemId => $changes) {
-            $change = @json_decode($changes, true);
-            if (count($change)) {
-                $fields->addFieldToTab('Root.Changes', LiteralField::create($elemId.'_change', "<strong>$elemId</strong>"));
-                foreach ($change as $field => $values) {
-                    $diff = Diff::compareHTML($values['before'], $values['after']);
-                    $fieldValue = '<div class="workflow-field-diff">' . $field . ': ' . $diff . '</div>';
-                    $fields->addFieldToTab('Root.Changes', LiteralField::create($field.'_change', $fieldValue));
+            foreach ($vals as $elemId => $changes) {
+                $change = @json_decode($changes, true);
+                if (count($change)) {
+                    $fields->addFieldToTab('Root.Changes', LiteralField::create($elemId.'_change', "<strong>$elemId</strong>"));
+                    foreach ($change as $field => $values) {
+                        $diff = Diff::compareHTML($values['before'], $values['after']);
+                        $fieldValue = '<div class="workflow-field-diff">' . $field . ': ' . $diff . '</div>';
+                        $fields->addFieldToTab('Root.Changes', LiteralField::create($field.'_change', $fieldValue));
+                    }
                 }
             }
         }
     }
 
     public function elementModified($element) {
-        $vals = $this->owner->ModifiedElements->getValues();
-        $vals = $vals ?: [];
+        $owner = $this->getOwner();
+        if ($owner->ModifiedElements) {
+            $vals = $owner->ModifiedElements->getValues() ?: [];
 
-        $changes = $element->getChangedFields(true, DataObject::CHANGE_VALUE);
-        if (!count($changes)) {
-            return;
+            $changes = $element->getChangedFields(true, DataObject::CHANGE_VALUE);
+            if (!count($changes)) {
+                return;
+            }
+
+            $vals[$element->ID] = json_encode($changes);
+            $owner->ModifiedElements->setValue($vals);
         }
-
-
-        $vals[$element->ID] = json_encode($changes);
-        $this->owner->ModifiedElements = $vals;
     }
 
     public function onBeforePublish() {
-        $this->owner->ModifiedElements = [];
+        $owner = $this->getOwner();
+        if ($owner->ModifiedElements) {
+            $owner->ModifiedElements->setValue([]);
+        }
     }
 }
