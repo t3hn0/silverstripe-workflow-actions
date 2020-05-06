@@ -86,12 +86,14 @@ class WorkflowedElement extends DataExtension
         return false;
     }
 
-    public function onBeforeWrite()
+    public function onAfterWrite()
     {
         // need to mark our parent page as modified to ensure workflow requirements are
         // met
+        $changes = $this->owner->getChangedFields(true, DataObject::CHANGE_VALUE);
+        unset($changes['Version']);
         $page = $this->owner->getPage();
-        if ($page && $page->ID && $page->hasExtension(ElementalPageWorkflowExtension::class)) {
+        if (count($changes) && $page && $page->ID && $page->hasExtension(ElementalPageWorkflowExtension::class)) {
             $page->elementModified($this->owner);
             $page->write();
         }
