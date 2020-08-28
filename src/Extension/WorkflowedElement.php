@@ -83,7 +83,6 @@ class WorkflowedElement extends DataExtension
             $page = $area->getOwnerPage();
             return $page->canPublish($member);
         }
-        return false;
     }
 
     public function onAfterWrite()
