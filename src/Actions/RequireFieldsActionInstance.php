@@ -35,7 +35,7 @@ class RequireFieldsActionInstance extends WorkflowActionInstance
         $req = $this->BaseAction()->RequiredFields;
         if ($req) {
             $req = $req->getValues();
-            if (!count($req)) {
+            if (!$req || !count($req)) {
                 return [];
             }
 
