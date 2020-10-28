@@ -22,3 +22,25 @@ SilverStripe\CMS\Controllers\CMSPageEditController:
 SilverStripe\Forms\GridField\GridFieldDetailForm_ItemRequest:
   extensions:
     - Symbiote\AdvancedWorkflow\Extension\RightsideWorkflow
+
+---
+Name: workflow_actions_jobs
+Only:
+  moduleexists: symbiote/silverstripe-queuedjobs
+---
+SilverStripe\Core\Injector\Injector:
+  Symbiote\QueuedJobs\Services\QueuedJobService:
+    properties:
+      defaultJobs:
+        WorkflowTimeoutJob:
+          type: 'Symbiote\AdvancedWorkflow\Jobs\WorkflowTimeoutJob'
+          filter:
+            JobTitle: 'Workflow Timeout Job'
+          construct:
+            -
+          startDateFormat: 'Y-m-d H:i:s'
+          # FREQUENCY OF TIMEOUT CHECKS
+          startTimeString: 'now + 1 hour'
+          recreate: 1
+          # ADMIN EMAIL HERE
+          email: 'admin@example.com'

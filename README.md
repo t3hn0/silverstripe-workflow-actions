@@ -9,9 +9,9 @@
 A set of workflow actions and extensions to extend the normal Advanced Workflow functionality
 
 * Assign Content Approvers - allows you to specify an approver group and publisher group for particular
-  content trees, that the workflow can use for assignment. Allows more flexible workflow definitions. 
-* ElementalPageWorkflowExtension & WorkflowedElement - allows tracking of changes on elements on 
-  parent pages to ensure workflow processes can be run at the parent page level. 
+  content trees, that the workflow can use for assignment. Allows more flexible workflow definitions.
+* ElementalPageWorkflowExtension & WorkflowedElement - allows tracking of changes on elements on
+  parent pages to ensure workflow processes can be run at the parent page level.
 * RightsideWorkflow - Moves workflow interaction to a sidebar rather than being hidden on a tab
 
 ## Composer Install
@@ -34,12 +34,35 @@ Page:
     - Symbiote\AdvancedWorkflow\Extension\ContentApproversExtension
 
 # If using elemental, this helps track changes on elements in the containing
-# parent page for review processes. 
+# parent page for review processes.
 Page:
   extensions:
     - Symbiote\AdvancedWorkflow\Extension\ElementalPageWorkflowExtension
 BaseElement:
   extensions:
     - Symbiote\AdvancedWorkflow\Extension\WorkflowedElement
-```
 
+# If using the **Timeout Transition Action**, you'll want to add this
+# config to setup the **Workflow Timeout Job** as a default job
+---
+Name: workflow_actions_jobs
+Only:
+  moduleexists: symbiote/silverstripe-queuedjobs
+---
+SilverStripe\Core\Injector\Injector:
+  Symbiote\QueuedJobs\Services\QueuedJobService:
+    properties:
+      defaultJobs:
+        WorkflowTimeoutJob:
+          type: 'Symbiote\AdvancedWorkflow\Jobs\WorkflowTimeoutJob'
+          filter:
+            JobTitle: 'Workflow Timeout Job'
+          construct:
+            -
+          startDateFormat: 'Y-m-d H:i:s'
+          # FREQUENCY OF TIMEOUT CHECKS
+          startTimeString: 'now + 1 hour'
+          recreate: 1
+          # ADMIN EMAIL HERE
+          email: 'admin@example.com'
+```
