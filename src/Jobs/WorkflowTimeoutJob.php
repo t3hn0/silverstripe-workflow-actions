@@ -21,7 +21,7 @@ class WorkflowTimeoutJob extends AbstractQueuedJob
 
     public function setup()
     {
-        $ttis = TimeoutTransitionInstance::get();
+        $ttis = TimeoutTransitionInstance::get()->filter('Finished', false);
         $this->totalSteps = $ttis->count();
         $this->ids = $ttis->column('ID');
         $this->offset = 0;
