@@ -30,10 +30,8 @@ class TimeoutTransitionAction extends WorkflowAction
         $fields = parent::getCMSFields();
 
         // increments
-        $inc = [];
-        preg_match('/Enum\(\"(.*)\"\)/', static::$db['TimeoutIncrement'], $inc);
-        $inc = explode(',', $inc[1]);
-        $increments = array_combine($inc, $inc);
+        $vals = $this->dbObject('TimeoutIncrement')->enumValues();
+        $increments = array_combine($vals, $vals);
 
         // transitions
         $transitions = [ 0 => 'None' ];
