@@ -2,41 +2,45 @@
 
 namespace Symbiote\AdvancedWorkflow\Actions;
 
-use SilverStripe\ORM\FieldType\DBDatetime;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowActionInstance;
 
 class TimeoutTransitionInstance extends WorkflowActionInstance
 {
     private static $table_name = 'TimeoutTransitionInstance';
 
-    public function attemptTimeoutTransition()
+    public function attemptTimeoutTransition(string &$err = ''): bool
     {
         // not timed out?
-        if (strtotime('now + 1 hour') < $this->getTimeoutTime()) {
-            return 'Timeout date not reached';
+        if (strtotime('now') < $this->getTimeoutTime()) {
+            $err = 'Timeout date not reached';
+            return false;
         }
 
         // not curr action?
         $flow = $this->Workflow();
         if (!$flow || $flow->CurrentActionID != $this->ID) {
-            return 'Not current action on workflow';
+            $err = 'Not current action on workflow';
+            return false;
         }
 
         // transition target no valid?
         $base = $this->BaseAction();
         if (!$base->Transitions()->filter('ID', $base->TimeoutTransitionID)->count()) {
-            return 'Transition target not valid';
+            $err = 'Transition target not valid';
+            return false;
         }
 
         // no target?
         $target = $flow->getTarget();
         if (!$target) {
-            return 'Workflow target missing';
+            $err = 'Workflow target missing';
+            return false;
         }
 
         // can't edit?
         if (!$target->canEditWorkflow()) {
-            return 'Unable to edit target workflow';
+            $err = 'Unable to edit target workflow';
+            return false;
         }
 
         // do transition
@@ -44,8 +48,7 @@ class TimeoutTransitionInstance extends WorkflowActionInstance
             'TransitionID' => $base->TimeoutTransitionID,
             'Comment' => 'Automatically transitioned due to timeout'
         ]);
-
-        return false;
+        return true;
     }
 
     public function getTimeoutTime()

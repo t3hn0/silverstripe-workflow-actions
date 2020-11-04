@@ -53,6 +53,7 @@ class TimeoutTransitionAction extends WorkflowAction
 
     public function execute(WorkflowInstance $workflow)
     {
-        return true;
+        // we can only be transitioned manually or by WorkflowTimeoutJob
+        return false;
     }
 }

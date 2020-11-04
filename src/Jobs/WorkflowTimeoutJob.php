@@ -38,10 +38,11 @@ class WorkflowTimeoutJob extends AbstractQueuedJob
             // get workflow inst
             if ($tti = TimeoutTransitionInstance::get_by_id($id)) {
                 // attemp transition
-                if ($err = $tti->attemptTimeoutTransition()) {
-                    $this->addMessage("Skipped item #{$id} due to '{$err}'.");
-                } else {
+                $err = '';
+                if ($tti->attemptTimeoutTransition($err)) {
                     $this->addMessage("Successfully transitioned item #{$id}.");
+                } else {
+                    $this->addMessage("Skipped item #{$id} due to '{$err}'.");
                 }
             }
             $this->currentStep++;
