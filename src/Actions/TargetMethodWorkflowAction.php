@@ -13,6 +13,11 @@ class TargetMethodWorkflowAction extends WorkflowAction
         'TargetMethodName' => 'Varchar(64)',
     ];
 
+    // prevent users from accidentally doing something bad
+    private static $method_blacklist = [
+        'delete', 'write', 'merge', 'update', 'destroy'
+    ];
+
     private static $table_name = 'TargetMethodWorkflowAction';
 
     public function getCMSFields()
@@ -37,10 +42,15 @@ class TargetMethodWorkflowAction extends WorkflowAction
 
     public function execute(WorkflowInstance $workflow)
     {
-        $object = $workflow->getTarget();
+        $target = $workflow->getTarget();
+
         $method = $this->TargetMethodName;
-        if ($method && ClassInfo::hasMethod($object, $method)) {
-            return $object->$method($workflow) !== false;
+        if ($method && ClassInfo::hasMethod($target, $method)) {
+            if (!in_array($method, static::$method_blacklist)) {
+                return $target->$method($workflow) !== false;
+            }
         }
+
+        return false;
     }
 }
