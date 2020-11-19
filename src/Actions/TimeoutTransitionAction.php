@@ -2,15 +2,13 @@
 
 namespace Symbiote\AdvancedWorkflow\Actions;
 
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use SilverStripe\Forms\DropdownField;
 use SilverStripe\Forms\FieldGroup;
 use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\NumericField;
-use SilverStripe\ORM\FieldType\DBDatetime;
 
-class TimeoutTransitionAction extends WorkflowAction
+class TimeoutTransitionAction extends SetPropertyWorkflowAction
 {
     private static $db = [
         'TimeoutCount' => 'Int',
@@ -39,21 +37,21 @@ class TimeoutTransitionAction extends WorkflowAction
             $transitions[$t->ID] = $t->Title.' ('.$t->NextAction->Title.')';
         }
 
-        $fields->addFieldsToTab('Root.Main', [
+        $fields->insertBefore('Property',
             FieldGroup::create('Timeout', [
                 new NumericField('TimeoutCount', 'Wait for this long:'),
                 new DropdownField('TimeoutIncrement', '', $increments),
                 new LiteralField('', '<span style="font-size:30px;margin-right:8px">&rarr;</span>'),
                 new DropdownField('TimeoutTransitionID', 'And then perform transition:', $transitions),
             ])
-        ]);
+        );
 
         return $fields;
     }
 
     public function execute(WorkflowInstance $workflow)
     {
-        // we can only be transitioned manually or by WorkflowTimeoutJob
-        return false;
+        parent::execute($workflow);
+        return true;
     }
 }

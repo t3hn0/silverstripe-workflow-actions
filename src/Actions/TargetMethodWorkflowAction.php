@@ -4,13 +4,17 @@ namespace Symbiote\AdvancedWorkflow\Actions;
 
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Forms\TextField;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 
-class TargetMethodWorkflowAction extends WorkflowAction
+class TargetMethodWorkflowAction extends SetPropertyWorkflowAction
 {
     private static $db = [
         'TargetMethodName' => 'Varchar(64)',
+    ];
+
+    // prevent users from accidentally doing something bad
+    private static $method_blacklist = [
+        'delete', 'write', 'merge', 'update', 'destroy'
     ];
 
     private static $table_name = 'TargetMethodWorkflowAction';
@@ -37,10 +41,17 @@ class TargetMethodWorkflowAction extends WorkflowAction
 
     public function execute(WorkflowInstance $workflow)
     {
-        $object = $workflow->getTarget();
+        parent::execute($workflow);
+
+        $target = $workflow->getTarget();
+
         $method = $this->TargetMethodName;
-        if ($method && ClassInfo::hasMethod($object, $method)) {
-            return $object->$method($workflow) !== false;
+        if ($method && ClassInfo::hasMethod($target, $method)) {
+            if (!in_array($method, static::$method_blacklist)) {
+                return $target->$method($workflow) !== false;
+            }
         }
+
+        return false;
     }
 }
