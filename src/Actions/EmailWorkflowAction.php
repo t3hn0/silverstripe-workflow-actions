@@ -11,11 +11,10 @@ use SilverStripe\Forms\LiteralField;
 use SilverStripe\Forms\TextField;
 use SilverStripe\Security\Group;
 use SilverStripe\Security\Member;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use Symbiote\UserTemplates\UserTemplate;
 
-class EmailWorkflowAction extends WorkflowAction
+class EmailWorkflowAction extends SetPropertyWorkflowAction
 {
     private static $db = [
         'EmailTarget' => 'Enum("Manual,Field,Member,Group","Manual")',
@@ -66,7 +65,7 @@ class EmailWorkflowAction extends WorkflowAction
             $newFields->push(DropdownField::create('EmailGroupID', $toTitle, Group::get()->map()));
         }
 
-        $fields->addFieldsToTab('Root.Main', $newFields);
+        $fields->insertBefore('Property', $newFields);
         $this->extend('updateTargetMethodCMSFields', $fields);
         return $fields;
     }
@@ -83,6 +82,8 @@ class EmailWorkflowAction extends WorkflowAction
 
     public function execute(WorkflowInstance $workflow)
     {
+        parent::execute($workflow);
+
         $target = $workflow->getTarget();
         $from = $this->EmailFrom;
         $subject = $this->EmailSubject;

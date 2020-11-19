@@ -4,10 +4,9 @@ namespace Symbiote\AdvancedWorkflow\Actions;
 
 use SilverStripe\Core\ClassInfo;
 use SilverStripe\Forms\TextField;
-use Symbiote\AdvancedWorkflow\DataObjects\WorkflowAction;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 
-class TargetMethodWorkflowAction extends WorkflowAction
+class TargetMethodWorkflowAction extends SetPropertyWorkflowAction
 {
     private static $db = [
         'TargetMethodName' => 'Varchar(64)',
@@ -42,6 +41,8 @@ class TargetMethodWorkflowAction extends WorkflowAction
 
     public function execute(WorkflowInstance $workflow)
     {
+        parent::execute($workflow);
+
         $target = $workflow->getTarget();
 
         $method = $this->TargetMethodName;
