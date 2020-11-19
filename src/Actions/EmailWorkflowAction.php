@@ -97,7 +97,7 @@ class EmailWorkflowAction extends WorkflowAction
             $addys[] = $this->EmailManual;
         }
         else if ($this->EmailTarget === 'Field') {
-            $addys[] = $this->EmailField;
+            $addys[] = $target->{$this->EmailField};
         }
         else if ($this->EmailTarget === 'Member') {
             if ($member = $this->EmailMember()) {
