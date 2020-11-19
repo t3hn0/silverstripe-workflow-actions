@@ -90,15 +90,22 @@ class EmailWorkflowAction extends SetPropertyWorkflowAction
         $template = $this->EmailTemplate();
 
         if (!$target || !$from || !$subject || !$template) {
-            return false;
+            return true;
         }
 
         $addys = [];
         if ($this->EmailTarget === 'Manual') {
-            $addys[] = $this->EmailManual;
+            if (filter_var($this->EmailManual, FILTER_VALIDATE_EMAIL)) {
+                $addys[] = $this->EmailManual;
+            }
         }
         else if ($this->EmailTarget === 'Field') {
-            $addys[] = $target->{$this->EmailField};
+            if ($target->hasField($this->EmailField)) {
+                $addy = $target->{$this->EmailField};
+                if (filter_var($addy, FILTER_VALIDATE_EMAIL)) {
+                    $addys[] = $addy;
+                }
+            }
         }
         else if ($this->EmailTarget === 'Member') {
             if ($member = $this->EmailMember()) {
@@ -128,11 +135,8 @@ class EmailWorkflowAction extends SetPropertyWorkflowAction
                 $email->setPlainTemplate($body->Plain());
                 $email->send();
             }
-            return true;
-        } catch (Exception $e) {
-            return false;
-        }
+        } catch (Exception $e) {}
 
-        return false;
+        return true;
     }
 }
