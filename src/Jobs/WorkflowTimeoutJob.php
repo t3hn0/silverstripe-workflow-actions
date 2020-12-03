@@ -3,6 +3,7 @@
 namespace Symbiote\AdvancedWorkflow\Jobs;
 
 use Symbiote\AdvancedWorkflow\Actions\TimeoutTransitionInstance;
+use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
 
 class WorkflowTimeoutJob extends AbstractQueuedJob
@@ -21,7 +22,9 @@ class WorkflowTimeoutJob extends AbstractQueuedJob
 
     public function setup()
     {
-        $ttis = TimeoutTransitionInstance::get()->filter('Finished', false);
+        $curIds = WorkflowInstance::get()->filter('CurrentActionID:GreaterThan', 0)->column('CurrentActionID');
+        $where = '"ID" IN (' . implode(',', $curIds) .')';
+        $ttis = TimeoutTransitionInstance::get()->where($where);
         $this->totalSteps = $ttis->count();
         $this->ids = $ttis->column('ID');
         $this->offset = 0;

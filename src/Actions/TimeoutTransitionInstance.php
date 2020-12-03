@@ -54,10 +54,26 @@ class TimeoutTransitionInstance extends WorkflowActionInstance
     public function getTimeoutTime()
     {
         $base = $this->BaseAction();
-        if (!$base->TimeoutTransitionID || !$base->TimeoutCount || !$base->TimeoutIncrement) {
+        $flow = $this->Workflow();
+
+        // need transition target
+        if (!$flow || !$base || !$base->TimeoutTransitionID) {
             return false;
         }
-        return strtotime("{$this->Created} + {$base->TimeoutCount} {$base->TimeoutIncrement}");
+
+        // static period
+        if ($base->TimeoutType == 'Static Period' && $base->TimeoutCount && $base->TimeoutIncrement) {
+            return strtotime("{$this->Created} + {$base->TimeoutCount} {$base->TimeoutIncrement}");
+        }
+        // date field
+        else if ($base->TimeoutType == 'Date Field' && $base->TimeoutDateField && $flow->TargetID) {
+            $target = $flow->getTarget();
+            if ($target->hasField($base->TimeoutDateField)) {
+                return strtotime($target->{$base->TimeoutDateField});
+            }
+        }
+
+        return false;
     }
 
     public function getTimeoutDate($format = 'Y-m-d H:i:s'): string
