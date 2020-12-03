@@ -62,11 +62,11 @@ class TimeoutTransitionInstance extends WorkflowActionInstance
         }
 
         // static period
-        if ($base->TimeoutType == 'Static Period' && $base->TimeoutCount && $base->TimeoutIncrement) {
+        if ($base->TimeoutType == TimeoutTransitionAction::STATIC_PERIOD && $base->TimeoutCount && $base->TimeoutIncrement) {
             return strtotime("{$this->Created} + {$base->TimeoutCount} {$base->TimeoutIncrement}");
         }
         // date field
-        else if ($base->TimeoutType == 'Date Field' && $base->TimeoutDateField && $flow->TargetID) {
+        else if ($base->TimeoutType == TimeoutTransitionAction::DATE_FIELD && $base->TimeoutDateField && $flow->TargetID) {
             $target = $flow->getTarget();
             if ($target->hasField($base->TimeoutDateField)) {
                 return strtotime($target->{$base->TimeoutDateField});

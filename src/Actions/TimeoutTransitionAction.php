@@ -27,6 +27,9 @@ class TimeoutTransitionAction extends SetPropertyWorkflowAction
     private static $table_name = 'TimeoutTransitionAction';
     private static $instance_class = TimeoutTransitionInstance::class;
 
+    public const STATIC_PERIOD = 'Static Period';
+    public const DATE_FIELD = 'Date Field';
+
     public function __construct($record = null, $isSingleton = false, $queryParams = array())
     {
         parent::__construct($record, $isSingleton, $queryParams);
@@ -55,10 +58,10 @@ class TimeoutTransitionAction extends SetPropertyWorkflowAction
             DropdownField::create('TimeoutType', 'Timeout Type', $types)
         ];
 
-        if ($this->TimeoutType == 'Static Period') {
+        if ($this->TimeoutType == static::STATIC_PERIOD) {
             $groupFields[] = NumericField::create('TimeoutCount', 'Wait for this long:');
             $groupFields[] = DropdownField::create('TimeoutIncrement', '', $increments);
-        } else if ($this->TimeoutType == 'Date Field') {
+        } else if ($this->TimeoutType == static::DATE_FIELD) {
             $groupFields[] = TextField::create('TimeoutDateField', 'Name of date field on target');
         }
 
