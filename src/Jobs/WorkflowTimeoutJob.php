@@ -5,6 +5,7 @@ namespace Symbiote\AdvancedWorkflow\Jobs;
 use Symbiote\AdvancedWorkflow\Actions\TimeoutTransitionInstance;
 use Symbiote\AdvancedWorkflow\DataObjects\WorkflowInstance;
 use Symbiote\QueuedJobs\Services\AbstractQueuedJob;
+use Symbiote\QueuedJobs\Services\QueuedJobService;
 
 class WorkflowTimeoutJob extends AbstractQueuedJob
 {
@@ -23,7 +24,7 @@ class WorkflowTimeoutJob extends AbstractQueuedJob
     public function setup()
     {
         $curIds = WorkflowInstance::get()->filter('CurrentActionID:GreaterThan', 0)->column('CurrentActionID');
-        $where = '"ID" IN (' . implode(',', $curIds) .')';
+        $where = '"ID" IN (' . implode(',', $curIds) . ')';
         $ttis = TimeoutTransitionInstance::get()->where($where);
         $this->totalSteps = $ttis->count();
         $this->ids = $ttis->column('ID');
@@ -54,6 +55,17 @@ class WorkflowTimeoutJob extends AbstractQueuedJob
         if ($this->currentStep >= $this->totalSteps) {
             $this->addMessage("Complete.");
             $this->isComplete = true;
+        }
+    }
+
+    public function afterComplete()
+    {
+        $queueService = singleton(QueuedJobService::class);
+        $defaults = $queueService->defaultJobs;
+
+        if (isset($defaults['WorkflowTimeoutJob']['startTimeString'])) {
+            $time = strtotime($defaults['WorkflowTimeoutJob']['startTimeString']);
+            $queueService->queueJob(new WorkflowTimeoutJob(), date('Y-m-d H:i:s', $time));
         }
     }
 }
