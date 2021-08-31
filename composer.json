@@ -1,50 +1,48 @@
 {
-    "name": "symbiote-library/silverstripe-workflow-actions",
-    "description": "A collection of useful workflow actions",
-    "type": "silverstripe-vendormodule",
-    "keywords": [
-        "silverstripe",
-        "symbiote",
-        "advanced workflow"
-    ],
-    "license": "BSD-3-Clause",
-    "authors": [
-        {
-            "name": "Symbiote",
-            "homepage": "https://www.symbiote.com.au/"
-        },
-        {
-            "name": "Marcus Nyeholt",
-            "email": "marcus@symbiote.com.au"
-        }
-    ],
-    "require": {
-        "silverstripe/framework": "^4.0",
-        "symbiote/silverstripe-advancedworkflow": "^5.0",
-        "symbiote/silverstripe-multivaluefield": "^5.0",
-        "micschk/silverstripe-rightsidebar": "^2.0"
-    },
-    "require-dev": {
-        "phpunit/phpunit": "^5.7"
-    },
-    "scripts": {
-        "phpcbf": "phpcbf src/ tests/",
-        "phpcs": "phpcs src/ tests/"
-    },
-    "autoload": {
-        "psr-4": {
-            "Symbiote\\AdvancedWorkflow\\": "src/",
-            "Symbiote\\AdvancedWorkflow\\Tests\\": "tests/"
-        }
-    },
-    "extra": {
-        "branch-alias": {
-            "dev-master": "1.2.x-dev"
-        },
-        "expose": [
-          "client/"
-        ]
-    },
-    "prefer-stable": true,
-    "minimum-stability": "dev"
+	"name" : "symbiote-library/silverstripe-workflow-actions",
+	"description" : "A collection of useful workflow actions",
+	"type" : "silverstripe-vendormodule",
+	"keywords" : [
+		"silverstripe",
+		"symbiote",
+		"advanced workflow"
+	],
+	"license" : "BSD-3-Clause",
+	"authors" : [{
+			"name" : "Symbiote",
+			"homepage" : "https://www.symbiote.com.au/"
+		}, {
+			"name" : "Marcus Nyeholt",
+			"email" : "marcus@symbiote.com.au"
+		}
+	],
+	"require" : {
+		"silverstripe/framework" : "^4.0",
+		"symbiote/silverstripe-advancedworkflow" : "*",
+		"symbiote/silverstripe-multivaluefield" : "^5.0",
+		"micschk/silverstripe-rightsidebar" : "^2.0"
+	},
+	"require-dev" : {
+		"phpunit/phpunit" : "^5.7"
+	},
+	"scripts" : {
+		"phpcbf" : "phpcbf src/ tests/",
+		"phpcs" : "phpcs src/ tests/"
+	},
+	"autoload" : {
+		"psr-4" : {
+			"Symbiote\\AdvancedWorkflow\\" : "src/",
+			"Symbiote\\AdvancedWorkflow\\Tests\\" : "tests/"
+		}
+	},
+	"extra" : {
+		"branch-alias" : {
+			"dev-master" : "1.2.x-dev"
+		},
+		"expose" : [
+			"client/"
+		]
+	},
+	"prefer-stable" : true,
+	"minimum-stability" : "dev"
 }
